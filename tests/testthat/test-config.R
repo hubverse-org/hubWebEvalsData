@@ -97,7 +97,7 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_invalid_targets_disaggregate_by.yaml")
       ),
-      regexp = 'Disaggregate by variables "THIS IS NOT A TASK ID VARIABLE" and "NEITHER IS THIS" not found in the hub task id variables.'
+      regexp = 'Disaggregate by variables "THIS IS NOT A TASK ID VARIABLE" and "NEITHER IS THIS"'
     )
   }
 )
@@ -112,7 +112,7 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_invalid_window_n_last.yaml")
       ),
-      regexp = '/eval_windows/1/n_last_round_ids must be >= 1'
+      regexp = "/eval_windows/1/n_last_round_ids must be >= 1"
     )
   }
 )
@@ -142,7 +142,7 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_invalid_task_id_text_non_task_id.yaml")
       ),
-      regexp = 'Specified `task_id_text` for task id variable "NOT_A_REAL_TASK_ID" that is not found in the hub task id variables.'
+      regexp = 'Specified `task_id_text` for task id variable "NOT_A_REAL_TASK_ID"'
     )
   }
 )
@@ -157,7 +157,7 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_invalid_task_id_text_missing.yaml")
       ),
-      regexp = '`task_id_text` must contain text values for all possible levels of task id variables. For task id variable "location", missing the following values: "US" and "25"'
+      regexp = 'For task id variable "location", missing the following values: "US" and "25"'
     )
   }
 )

@@ -215,7 +215,8 @@ validate_config_eval_windows <- function(webevals_config, hub_tasks_config) {
     if (!eval_window$min_round_id %in% hub_round_ids) {
       raise_config_error(
         cli::format_inline(
-          "Minimum round id {.val {eval_window$min_round_id}} for evaluation window is not a valid round id for the hub."
+          "Minimum round id {.val {eval_window$min_round_id}} for evaluation ",
+          "window is not a valid round id for the hub."
         )
       )
     }
@@ -237,7 +238,8 @@ validate_config_task_id_text <- function(webevals_config, task_groups, task_id_n
   if (length(extra_task_id_text_names) > 0) {
     raise_config_error(
       cli::format_inline(
-        "Specified `task_id_text` for task id variable{?s} {.val {extra_task_id_text_names}} that {?is/are} not found in the hub task id variables."
+        "Specified `task_id_text` for task id variable{?s} {.val {extra_task_id_text_names}} ",
+        "that {?is/are} not found in the hub task id variables."
       )
     )
   }
@@ -265,7 +267,8 @@ validate_config_task_id_text <- function(webevals_config, task_groups, task_id_n
       raise_config_error(
         cli::format_inline(
           "`task_id_text` must contain text values for all possible levels of task id variables. ",
-          "For task id variable {.val {task_id_name}}, missing the following values: {.val {missing_task_id_text_values}}"
+          "For task id variable {.val {task_id_name}}, missing the following values: ",
+          "{.val {missing_task_id_text_values}}"
         )
       )
     }
