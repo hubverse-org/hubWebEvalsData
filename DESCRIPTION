@@ -1,9 +1,10 @@
-Package: hubWebEvalsData
-Title: What the Package Does (One Line, Title Case)
+Package: hubPredEvalsData
+Title: Data Creation for Hub Prediction Evaluations via predevals
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Evan", "Ray", , "elray@umass.edu", role = c("aut", "cre"))
+Description: This package generates data objects with scores for predictions in
+    a hub, to be displayed on a dashboard using predevals.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -11,5 +12,6 @@ RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/hubverse-org/hubWebEvalsData
-BugReports: https://github.com/hubverse-org/hubWebEvalsData/issues
+URL: https://github.com/hubverse-org/hubPredEvalsData
+BugReports: https://github.com/hubverse-org/hubPredEvalsData/issues
+Config/Needs/website: hubverse-org/hubStyle
