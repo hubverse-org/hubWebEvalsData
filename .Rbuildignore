@@ -1,0 +1,10 @@
+^hubWebEvalsData\.Rproj$
+^\.Rproj\.user$
+^\.DS_Store$
+^\.Rhistory$
+^\.Rdata$
+^\.httr-oauth$
+^\.secrets$
+^LICENSE\.md$
+^README\.Rmd$
+^\.github$
