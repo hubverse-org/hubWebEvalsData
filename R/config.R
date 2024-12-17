@@ -228,7 +228,7 @@ validate_config_eval_windows <- function(webevals_config, hub_tasks_config) {
 #' - check that all task_id_text items are valid task id variable names
 #' - check that all values of the task id variable in the hub appear as task_id_text item keys
 #'
-#' @noRd 
+#' @noRd
 validate_config_task_id_text <- function(webevals_config, task_groups, task_id_names) {
   # all task_id_text items must be valid task id variable names
   extra_task_id_text_names <- setdiff(
