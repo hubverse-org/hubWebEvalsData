@@ -1,0 +1,23 @@
+targets: [
+  {
+    "target_id": "wk inc flu hosp",
+    "metrics": ["wis", "ae_median", "interval_coverage_50", "interval_coverage_95"],
+    "disaggregate_by": ["location", "reference_date", "horizon", "target_end_date"],
+  },
+  {
+    "target_id": "wk flu hosp rate category",
+    "metrics": ["log_score", "rps"],
+    "disaggregate_by": ["location", "reference_date", "horizon", "target_end_date"],
+  }
+]
+eval_windows: [
+  {
+    "window_name": "Full season",
+    "min_round_id": "2023-01-21"
+  },
+  {
+    "window_name": "Last 4 weeks",
+    "min_round_id": "2023-01-21",
+    "n_last_round_ids": 4
+  },
+]

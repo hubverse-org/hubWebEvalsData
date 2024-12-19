@@ -1,11 +1,25 @@
 Package: hubPredEvalsData
 Title: Data Creation for Hub Prediction Evaluations via predevals
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R: c(
     person("Evan", "Ray", , "elray@umass.edu", role = c("aut", "cre"))
+    )
 Description: This package generates data objects with scores for predictions in
     a hub, to be displayed on a dashboard using predevals.
 License: MIT + file LICENSE
+Imports:
+    cli,
+    dplyr (>= 1.1.0),
+    hubUtils,
+    jsonlite,
+    jsonvalidate,
+    purrr,
+    rlang,
+    scoringutils (>= 2.0.0.9000),
+    yaml
+Remotes:
+    hubverse-org/hubUtils,
+    epiforecasts/scoringutils
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

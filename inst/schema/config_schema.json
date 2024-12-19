@@ -1,0 +1,89 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/hubverse-org/hubWebevals/inst/schema/webevals_config_schema.json",
+    "title": "hubWebevals options",
+    "description": "hubWebevals configuration object schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "targets": {
+            "description": "Targets for which to compute evaluation metrics, as well as a specification of how predictions for each target should be computed.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "target_id": {
+                        "description": "The target id, matching a value given in the target_metadata.target_id field in the hub's tasks_config.json file",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "metrics": {
+                        "description": "Names of metrics to compute for this target.  These should be names of metrics supported by hubEvals::score_model_out.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1
+                    },
+                    "disaggregate_by": {
+                        "description": "Optional list of task id columns to disaggregate by. Aggregated scores for each model will always be computed.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "target_id",
+                    "metrics"
+                ]
+            }
+        },
+        "eval_windows": {
+            "description": "Specification of evaluation windows to use for computing scores.  If both min_round_id and n_last_round_ids are provided, the evaluation window will include the intersection of the two sets of round ids.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "window_name": {
+                        "description": "A name for the evaluation window",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "min_round_id": {
+                        "description": "Minimum round id to include in the evaluation window, optional. Prior round_ids will be excluded from the evaluation.",
+                        "type": "string"
+                    },
+                    "n_last_round_ids": {
+                        "description": "Number of trailing round ids to include in the evaluation window, optional.",
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "window_name"
+                ]
+            }
+        },
+        "task_id_text": {
+            "description": "Optional mapping of hub task id values to text. Keys are `task_id`s and values are an object whose keys are `task_id` `value`s and values are human-readable text.",
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": [
+        "targets",
+        "eval_windows"
+    ]
+}
