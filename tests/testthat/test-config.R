@@ -13,6 +13,48 @@ test_that(
 )
 
 test_that(
+  "read_webevals_config succeeds, valid yaml file with no min_round_id",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_snapshot(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_valid_no_min_round_id.yaml")
+      )
+    )
+  }
+)
+
+test_that(
+  "read_webevals_config succeeds, valid yaml file with no disaggregate_by",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_snapshot(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_valid_no_disaggregate_by.yaml")
+      )
+    )
+  }
+)
+
+test_that(
+  "read_webevals_config succeeds, valid yaml file with no task_id_text",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_snapshot(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_valid_no_task_id_text.yaml")
+      )
+    )
+  }
+)
+
+test_that(
   "read_webevals_config fails, invalid yaml file",
   {
     hub_path <- test_path("testdata", "ecfh")

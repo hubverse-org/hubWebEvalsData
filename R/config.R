@@ -212,6 +212,10 @@ validate_config_eval_windows <- function(webevals_config, hub_tasks_config) {
   hub_round_ids <- hubUtils::get_round_ids(hub_tasks_config)
   for (eval_window in webevals_config$eval_windows) {
     # check that min_round_id is a valid round_id
+    # only do this check if eval_window$min_round_id is specified
+    if (!"min_round_id" %in% names(eval_window)) {
+      next
+    }
     if (!eval_window$min_round_id %in% hub_round_ids) {
       raise_config_error(
         cli::format_inline(
