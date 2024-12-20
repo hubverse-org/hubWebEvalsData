@@ -1,4 +1,3 @@
-
 #' Check that two data frames are equal up to row order
 #'
 #' @param df_act The actual data frame
