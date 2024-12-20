@@ -32,7 +32,7 @@ test_that(
       hub_path = test_path("testdata", "ecfh"),
       target_id = "wk flu hosp rate category",
       eval_window = list(
-        window_name = "all",
+        window_name = "some subset",
         min_round_id = "2022-11-19"
       )
     )
@@ -62,7 +62,7 @@ test_that(
       hub_path = test_path("testdata", "ecfh"),
       target_id = "wk flu hosp rate category",
       eval_window = list(
-        window_name = "all",
+        window_name = "some subset",
         n_last_round_ids = 5
       )
     )
@@ -87,7 +87,7 @@ test_that(
       hub_path = test_path("testdata", "ecfh"),
       target_id = "wk flu hosp rate category",
       eval_window = list(
-        window_name = "all",
+        window_name = "some subset",
         n_last_round_ids = 4
       )
     )
@@ -116,7 +116,7 @@ test_that(
       hub_path = test_path("testdata", "ecfh"),
       target_id = "wk flu hosp rate category",
       eval_window = list(
-        window_name = "all",
+        window_name = "some subset",
         min_round_id = "2023-01-14",
         n_last_round_ids = 9
       )
@@ -146,7 +146,7 @@ test_that(
       hub_path = test_path("testdata", "ecfh"),
       target_id = "wk flu hosp rate category",
       eval_window = list(
-        window_name = "all",
+        window_name = "some subset",
         min_round_id = "2022-11-19",
         n_last_round_ids = 5
       )
