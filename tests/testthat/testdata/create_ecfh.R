@@ -15,7 +15,6 @@ library(dplyr)
 library(hubData)
 
 hub_path <- "tests/testthat/testdata/ecfh"
-hub_conn <- hubData::connect_hub(hub_path)
 
 models <- list.dirs(file.path(hub_path, "model-output"),
                     full.names = FALSE, recursive = FALSE)
@@ -36,14 +35,14 @@ for (model in models) {
     model_short <- model
   }
   for (reference_date in reference_dates) {
-    model_out_tbl <- hub_conn |>
+    model_out_tbl <- readr::read_csv(
+      file.path(hub_path, "model-output", model, paste0(reference_date, "-", model, ".csv"))
+    ) |>
       dplyr::filter(
         location %in% c("US", "01"),
         (output_type != "quantile") |
           (output_type_id %in% c("0.025", "0.25", "0.5", "0.75", "0.975"))
-      ) |>
-      dplyr::collect() |>
-      dplyr::select(-model_id)
+      )
 
     write.csv(
       model_out_tbl,
