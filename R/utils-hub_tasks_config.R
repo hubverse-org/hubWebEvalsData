@@ -1,4 +1,8 @@
 #' For each task group, get the target_id entries from its target_metadata
+#'
+#' @return a list with one entry for each task group,
+#' where each entry is a character vector of target_ids for that group
+#'
 #' @noRd
 get_target_ids_by_task_group <- function(task_groups) {
   result <- purrr::map(
@@ -15,7 +19,8 @@ get_target_ids_by_task_group <- function(task_groups) {
 }
 
 
-#' Get the indices of elements of target_ids_by_task_group that contain the target_id
+#' Get an integer vector with the indices of elements of
+#' target_ids_by_task_group that contain the target_id
 #' @noRd
 get_task_group_idxs_w_target <- function(target_id, target_ids_by_task_group) {
   result <- purrr::map2(

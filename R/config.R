@@ -8,7 +8,7 @@
 read_config <- function(hub_path, config_path) {
   tryCatch(
     {
-      config <- yaml::read_yaml(config_path)
+      config <- yaml::read_yaml(config_path, eval.expr = FALSE)
     },
     error = function(e) {
       # This handler is used when an unrecoverable error is thrown while

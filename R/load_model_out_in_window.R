@@ -13,7 +13,8 @@ load_model_out_in_window <- function(hub_path, target_id, eval_window) {
 
   # filter to the requested target_id
   hub_tasks_config <- hubUtils::read_config(hub_path, config = "tasks")
-  task_groups <- hub_tasks_config[["rounds"]][[1]][["model_tasks"]]
+  round_ids <- hubUtils::get_round_ids(hub_tasks_config)
+  task_groups <- hubUtils::get_round_model_tasks(hub_tasks_config, round_ids[1])
   target_ids_by_task_group <- get_target_ids_by_task_group(task_groups)
   task_group_idxs_w_target <- get_task_group_idxs_w_target(target_id, target_ids_by_task_group)
 
@@ -28,7 +29,8 @@ load_model_out_in_window <- function(hub_path, target_id, eval_window) {
     dplyr::filter(!!rlang::sym(target_task_id_var_name) == target_task_id_value)
 
   # if eval_window doesn't specify any subsetting by rounds, return the full data
-  if (identical(names(eval_window), "window_name")) {
+  no_limits <- identical(names(eval_window), "window_name")
+  if (no_limits) {
     return(conn |> dplyr::collect())
   }
 
@@ -44,7 +46,6 @@ load_model_out_in_window <- function(hub_path, target_id, eval_window) {
 
   if ("n_last_round_ids" %in% names(eval_window)) {
     # filter to the last n rounds
-    round_ids <- hubUtils::get_round_ids(hub_tasks_config)
     max_present_round_id <- max(model_out_tbl[[round_id_var_name]])
     round_ids <- round_ids[round_ids <= max_present_round_id]
     round_ids <- utils::tail(round_ids, eval_window$n_last_round_ids)

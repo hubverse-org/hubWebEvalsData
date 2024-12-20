@@ -14,7 +14,7 @@
 library(dplyr)
 library(hubData)
 
-hub_path <- "tests/testthat/testdata/ecfh"
+hub_path <- testthat::test_path("testdata", "ecfh")
 
 models <- list.dirs(file.path(hub_path, "model-output"),
                     full.names = FALSE, recursive = FALSE)

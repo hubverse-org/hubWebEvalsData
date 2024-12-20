@@ -80,6 +80,10 @@ test_that(
       model_out_tbl,
       expected_model_out_tbl
     )
+    expect_setequal(
+      unique(model_out_tbl$reference_date),
+      c("2022-12-17", "2023-01-14")
+    )
 
     # n_last_round_ids = 4: we expect 2022-12-24, 2022-12-31, 2023-01-07, 2023-01-14
     # (but note that ecfh has only 2023-01-14 from this set)
@@ -104,6 +108,10 @@ test_that(
     expect_df_equal_up_to_order(
       model_out_tbl,
       expected_model_out_tbl
+    )
+    expect_setequal(
+      unique(model_out_tbl$reference_date),
+      c("2023-01-14")
     )
   }
 )
@@ -135,6 +143,10 @@ test_that(
       model_out_tbl,
       expected_model_out_tbl
     )
+    expect_setequal(
+      unique(model_out_tbl$reference_date),
+      c("2023-01-14")
+    )
   }
 )
 
@@ -147,7 +159,7 @@ test_that(
       target_id = "wk flu hosp rate category",
       eval_window = list(
         window_name = "some subset",
-        min_round_id = "2022-11-19",
+        min_round_id = "2022-11-19", # there are 9 rounds on or after this date
         n_last_round_ids = 5
       )
     )
@@ -164,6 +176,10 @@ test_that(
     expect_df_equal_up_to_order(
       model_out_tbl,
       expected_model_out_tbl
+    )
+    expect_setequal(
+      unique(model_out_tbl$reference_date),
+      c("2022-12-17", "2023-01-14")
     )
   }
 )
