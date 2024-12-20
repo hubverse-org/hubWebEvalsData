@@ -10,6 +10,7 @@ License: MIT + file LICENSE
 Imports:
     cli,
     dplyr (>= 1.1.0),
+    hubData,
     hubUtils,
     jsonlite,
     jsonvalidate,
@@ -18,6 +19,7 @@ Imports:
     scoringutils (>= 2.0.0.9000),
     yaml
 Remotes:
+    hubverse-org/hubData,
     hubverse-org/hubUtils,
     epiforecasts/scoringutils
 Encoding: UTF-8

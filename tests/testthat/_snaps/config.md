@@ -2,8 +2,6 @@
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs", "config_valid.yaml"))
-    Message
-      i Updating superseded URL `Infectious-Disease-Modeling-hubs` to `hubverse-org`
     Output
       $targets
       $targets[[1]]
@@ -235,8 +233,6 @@
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_no_min_round_id.yaml"))
-    Message
-      i Updating superseded URL `Infectious-Disease-Modeling-hubs` to `hubverse-org`
     Output
       $targets
       $targets[[1]]
@@ -454,8 +450,6 @@
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_no_disaggregate_by.yaml"))
-    Message
-      i Updating superseded URL `Infectious-Disease-Modeling-hubs` to `hubverse-org`
     Output
       $targets
       $targets[[1]]
@@ -681,8 +675,6 @@
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_no_task_id_text.yaml"))
-    Message
-      i Updating superseded URL `Infectious-Disease-Modeling-hubs` to `hubverse-org`
     Output
       $targets
       $targets[[1]]

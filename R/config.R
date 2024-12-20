@@ -1,4 +1,3 @@
-
 #' Load and validate a webevals config file
 #'
 #' @param hub_path A path to the hub.
@@ -9,7 +8,7 @@
 read_config <- function(hub_path, config_path) {
   tryCatch(
     {
-      config <- yaml::read_yaml(config_path)
+      config <- yaml::read_yaml(config_path, eval.expr = FALSE)
     },
     error = function(e) {
       # This handler is used when an unrecoverable error is thrown while
@@ -88,23 +87,9 @@ validate_config_vs_hub_tasks <- function(hub_path, webevals_config) {
   }
 
   task_groups <- hub_tasks_config[["rounds"]][[1]][["model_tasks"]]
-  target_ids_by_task_group <- purrr::map(
-    task_groups,
-    function(task_group) {
-      purrr::map_chr(
-        task_group[["target_metadata"]],
-        function(target) target[["target_id"]]
-      )
-    }
-  )
 
   # checks for targets
-  validate_config_targets(
-    webevals_config,
-    task_groups,
-    target_ids_by_task_group,
-    task_id_names
-  )
+  validate_config_targets(webevals_config, task_groups, task_id_names)
 
   # checks for eval_windows
   validate_config_eval_windows(webevals_config, hub_tasks_config)
@@ -120,26 +105,17 @@ validate_config_vs_hub_tasks <- function(hub_path, webevals_config) {
 #' - disaggregate_by entries are task id variable names
 #'
 #' @noRd
-validate_config_targets <- function(webevals_config, task_groups,
-                                    target_ids_by_task_group, task_id_names) {
+validate_config_targets <- function(webevals_config, task_groups, task_id_names) {
+  target_ids_by_task_group <- get_target_ids_by_task_group(task_groups)
+
   for (target in webevals_config$targets) {
     target_id <- target$target_id
 
     # get task groups for this target
-    task_group_idxs_with_target <- purrr::map2(
-      seq_along(target_ids_by_task_group), target_ids_by_task_group,
-      function(i, target_ids) {
-        if (target_id %in% target_ids) {
-          return(i)
-        }
-        return(NULL)
-      }
-    ) |>
-      purrr::compact() |>
-      unlist()
+    task_group_idxs_w_target <- get_task_group_idxs_w_target(target_id, target_ids_by_task_group)
 
     # check that target_id in the webevals config appears in the hub tasks
-    if (length(task_group_idxs_with_target) == 0) {
+    if (length(task_group_idxs_w_target) == 0) {
       raise_config_error(
         cli::format_inline("Target id {.val {target_id}} not found in any task group.")
       )
@@ -147,12 +123,12 @@ validate_config_targets <- function(webevals_config, task_groups,
 
     # check that metrics are valid for the available output types
     output_types_for_target <- purrr::map(
-      task_group_idxs_with_target,
+      task_group_idxs_w_target,
       function(i) names(task_groups[[i]][["output_type"]])
     ) |>
       unlist() |>
       unique()
-    task_group_idx <- task_group_idxs_with_target[[1]]
+    task_group_idx <- task_group_idxs_w_target[[1]]
     target_type <- task_groups[[task_group_idx]]$target_metadata[[
       which(target_ids_by_task_group[[task_group_idx]] == target_id)
     ]]$target_type
@@ -333,6 +309,7 @@ get_standard_metrics <- function(output_type, is_ordinal) {
     )
   )
 }
+
 
 #' Raise an error related to the webevals config file
 #' @noRd
