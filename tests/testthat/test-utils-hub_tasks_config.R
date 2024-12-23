@@ -54,5 +54,10 @@ test_that(
         )
       )
     )
+
+    expect_equal(
+      filter_task_groups_to_target(task_groups, "NOT A REAL TARGET ID"),
+      list()
+    )
   }
 )
