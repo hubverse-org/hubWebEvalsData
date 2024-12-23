@@ -61,3 +61,60 @@ test_that(
     )
   }
 )
+
+
+test_that(
+  "get_output_types works",
+  {
+    task_groups <- list(
+      list(
+        output_type = list(
+          "output_type_1" = "output_type_1_value",
+          "output_type_2" = "output_type_2_value"
+        )
+      ),
+      list(
+        output_type = list(
+          "output_type_2" = "output_type_2_value",
+          "output_type_3" = "output_type_3_value"
+        )
+      ),
+      list(
+        output_type = list(
+          "output_type_3" = "output_type_3_value"
+        )
+      )
+    )
+
+    expect_equal(
+      get_output_types(task_groups),
+      c("output_type_1", "output_type_2", "output_type_3")
+    )
+  }
+)
+
+
+test_that(
+  "get_target_is_ordinal works",
+  {
+    task_groups_w_target <- list(
+      list(
+        target_metadata = list(
+          list(target_type = "ordinal")
+        )
+      )
+    )
+
+    expect_true(get_target_is_ordinal(task_groups_w_target))
+
+    task_groups_w_target <- list(
+      list(
+        target_metadata = list(
+          list(target_type = "nominal")
+        )
+      )
+    )
+
+    expect_false(get_target_is_ordinal(task_groups_w_target))
+  }
+)

@@ -19,3 +19,24 @@ filter_task_groups_to_target <- function(task_groups, target_id) {
 
   return(task_groups)
 }
+
+
+#' Get a character vector of all output types across all task groups
+#' @noRd
+get_output_types <- function(task_groups) {
+  output_types <- purrr::map(
+    task_groups,
+    function(task_group) names(task_group[["output_type"]])
+  ) |>
+    unlist() |>
+    unique()
+  return(output_types)
+}
+
+
+#' Get a boolean indicating whether the target is ordinal
+#' @noRd
+get_target_is_ordinal <- function(task_groups_w_target) {
+  target_type <- task_groups_w_target[[1]]$target_metadata[[1]]$target_type
+  return(target_type == "ordinal")
+}
