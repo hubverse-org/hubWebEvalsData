@@ -1,39 +1,21 @@
-#' For each task group, get the target_id entries from its target_metadata
-#'
-#' @return a list with one entry for each task group,
-#' where each entry is a character vector of target_ids for that group
+#' Filter task groups from a hub's tasks config to those that contain a target_id.
+#' Additionally, subset the target_metadata to just the entry for the target_id.
 #'
 #' @noRd
-get_target_ids_by_task_group <- function(task_groups) {
-  result <- purrr::map(
+filter_task_groups_to_target <- function(task_groups, target_id) {
+  # For each task group, subset the target_metadata to just the entry for the target_id
+  # If the target_id is not in the task group, the target_metadata will be empty
+  task_groups <- purrr::map(
     task_groups,
     function(task_group) {
-      purrr::map_chr(
-        task_group[["target_metadata"]],
-        function(target) target[["target_id"]]
-      )
+      task_group$target_metadata <- purrr::keep(task_group$target_metadata,
+                                                ~ .x$target_id == target_id)
+      return(task_group)
     }
   )
 
-  return(result)
-}
+  # Remove task groups that don't contain the target_id
+  task_groups <- purrr::keep(task_groups, ~ length(.x$target_metadata) > 0)
 
-
-#' Get an integer vector with the indices of elements of
-#' target_ids_by_task_group that contain the target_id
-#' @noRd
-get_task_group_idxs_w_target <- function(target_id, target_ids_by_task_group) {
-  result <- purrr::map2(
-    seq_along(target_ids_by_task_group), target_ids_by_task_group,
-    function(i, target_ids) {
-      if (target_id %in% target_ids) {
-        return(i)
-      }
-      return(NULL)
-    }
-  ) |>
-    purrr::compact() |>
-    unlist()
-
-  return(result)
+  return(task_groups)
 }
