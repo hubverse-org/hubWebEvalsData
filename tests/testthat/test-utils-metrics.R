@@ -31,6 +31,7 @@ test_that(
     metrics <- c("se_point", "ae_point", "interval_coverage_50", "wis", "ae_median",
                  "NOT A REAL METRIC", "log_score", "rps")
 
+    # note: the "rps" metric is only supported for ordinal pmf targets
     expect_equal(
       get_metric_name_to_output_type(task_groups, metrics),
       data.frame(
