@@ -106,16 +106,14 @@ validate_config_vs_hub_tasks <- function(hub_path, webevals_config) {
 #'
 #' @noRd
 validate_config_targets <- function(webevals_config, task_groups, task_id_names) {
-  target_ids_by_task_group <- get_target_ids_by_task_group(task_groups)
-
   for (target in webevals_config$targets) {
     target_id <- target$target_id
 
     # get task groups for this target
-    task_group_idxs_w_target <- get_task_group_idxs_w_target(target_id, target_ids_by_task_group)
+    task_groups_w_target <- filter_task_groups_to_target(task_groups, target_id)
 
     # check that target_id in the webevals config appears in the hub tasks
-    if (length(task_group_idxs_w_target) == 0) {
+    if (length(task_groups_w_target) == 0) {
       raise_config_error(
         cli::format_inline("Target id {.val {target_id}} not found in any task group.")
       )
@@ -123,15 +121,12 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
 
     # check that metrics are valid for the available output types
     output_types_for_target <- purrr::map(
-      task_group_idxs_w_target,
-      function(i) names(task_groups[[i]][["output_type"]])
+      task_groups_w_target,
+      function(task_group) names(task_group[["output_type"]])
     ) |>
       unlist() |>
       unique()
-    task_group_idx <- task_group_idxs_w_target[[1]]
-    target_type <- task_groups[[task_group_idx]]$target_metadata[[
-      which(target_ids_by_task_group[[task_group_idx]] == target_id)
-    ]]$target_type
+    target_type <- task_groups_w_target[[1]]$target_metadata[[1]]$target_type
     target_is_ordinal <- target_type == "ordinal"
 
     metric_name_to_output_type <- get_metric_name_to_output_type(

@@ -15,15 +15,11 @@ load_model_out_in_window <- function(hub_path, target_id, eval_window) {
   hub_tasks_config <- hubUtils::read_config(hub_path, config = "tasks")
   round_ids <- hubUtils::get_round_ids(hub_tasks_config)
   task_groups <- hubUtils::get_round_model_tasks(hub_tasks_config, round_ids[1])
-  target_ids_by_task_group <- get_target_ids_by_task_group(task_groups)
-  task_group_idxs_w_target <- get_task_group_idxs_w_target(target_id, target_ids_by_task_group)
+  task_groups_w_target <- filter_task_groups_to_target(task_groups, target_id)
 
-  target_meta <- purrr::keep(
-    task_groups[[task_group_idxs_w_target[[1]]]]$target_metadata,
-    function(x) x$target_id == target_id
-  )
-  target_task_id_var_name <- names(target_meta[[1]]$target_keys)
-  target_task_id_value <- target_meta[[1]]$target_keys[[target_task_id_var_name]]
+  target_meta <- task_groups_w_target[[1]]$target_metadata[[1]]
+  target_task_id_var_name <- names(target_meta$target_keys)
+  target_task_id_value <- target_meta$target_keys[[target_task_id_var_name]]
 
   conn <- conn |>
     dplyr::filter(!!rlang::sym(target_task_id_var_name) == target_task_id_value)
