@@ -37,6 +37,8 @@ get_output_types <- function(task_groups) {
 #' Get a boolean indicating whether the target is ordinal
 #' @noRd
 is_target_ordinal <- function(task_groups_w_target) {
+  # The task_groups_w_target has been filtered to a single target,
+  # so we can just check the target_type of the first entry
   target_type <- task_groups_w_target[[1]]$target_metadata[[1]]$target_type
   return(target_type == "ordinal")
 }
