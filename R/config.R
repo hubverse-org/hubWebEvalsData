@@ -131,7 +131,7 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
 
     if (length(unsupported_metrics) > 0) {
       available_output_types <- get_output_types(task_groups_w_target) # nolint: object_usage
-      target_is_ordinal <- get_target_is_ordinal(task_groups_w_target)
+      target_is_ordinal <- is_target_ordinal(task_groups_w_target)
       raise_config_error(
         c(
           cli::format_inline(

@@ -14,7 +14,7 @@ get_metric_name_to_output_type <- function(task_groups_w_target, metrics) {
   available_output_types <- get_output_types(task_groups_w_target)
 
   # indicator of whether the target is ordinal
-  target_is_ordinal <- get_target_is_ordinal(task_groups_w_target)
+  target_is_ordinal <- is_target_ordinal(task_groups_w_target)
 
   # result is a data frame with 1 row for each metric
   # we populate the output type to use for each metric below

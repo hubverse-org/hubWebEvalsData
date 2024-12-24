@@ -95,7 +95,7 @@ test_that(
 
 
 test_that(
-  "get_target_is_ordinal works",
+  "is_target_ordinal works",
   {
     task_groups_w_target <- list(
       list(
@@ -105,7 +105,7 @@ test_that(
       )
     )
 
-    expect_true(get_target_is_ordinal(task_groups_w_target))
+    expect_true(is_target_ordinal(task_groups_w_target))
 
     task_groups_w_target <- list(
       list(
@@ -115,6 +115,6 @@ test_that(
       )
     )
 
-    expect_false(get_target_is_ordinal(task_groups_w_target))
+    expect_false(is_target_ordinal(task_groups_w_target))
   }
 )
