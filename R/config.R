@@ -120,19 +120,9 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
     }
 
     # check that metrics are valid for the available output types
-    output_types_for_target <- purrr::map(
-      task_groups_w_target,
-      function(task_group) names(task_group[["output_type"]])
-    ) |>
-      unlist() |>
-      unique()
-    target_type <- task_groups_w_target[[1]]$target_metadata[[1]]$target_type
-    target_is_ordinal <- target_type == "ordinal"
-
     metric_name_to_output_type <- get_metric_name_to_output_type(
-      target$metrics,
-      output_types_for_target,
-      target_is_ordinal
+      task_groups_w_target,
+      target$metrics
     )
     unsupported_metrics <- setdiff(
       target$metrics,
@@ -140,6 +130,8 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
     )
 
     if (length(unsupported_metrics) > 0) {
+      available_output_types <- get_output_types(task_groups_w_target) # nolint: object_usage
+      target_is_ordinal <- is_target_ordinal(task_groups_w_target)
       raise_config_error(
         c(
           cli::format_inline(
@@ -147,7 +139,7 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
             "available output types for {.arg target_id} {.val {target_id}}."
           ),
           "i" = cli::format_inline(
-            "Output type{?s}: {.val {output_types_for_target}}",
+            "Output type{?s}: {.val {available_output_types}}",
             ifelse(target_is_ordinal, " for ordinal target.", ".")
           ),
           "x" = cli::format_inline(
@@ -248,61 +240,6 @@ validate_config_task_id_text <- function(webevals_config, task_groups, task_id_n
       )
     }
   }
-}
-
-
-#' Get a data frame with 1 row for each metric, matching the metric with the
-#' output type to use for calculating the metric.  If the metric is invalid or
-#' can't be calculated from the available_output_types, the output_type will be
-#' NA.
-#'
-#' This implementation is somewhat fragile.  It assumes that all metrics are
-#' either an interval coverage (to be computed based on quantile forecasts) or
-#' a standard metric provided by scoringutils.  If hubEvals eventually supports
-#' other metrics, this function will need to be updated.
-#'
-#' Consider moving this function to hubEvals.
-#' @noRd
-get_metric_name_to_output_type <- function(metrics, available_output_types,
-                                           is_ordinal) {
-  result <- data.frame(
-    metric = metrics,
-    output_type = NA_character_
-  )
-
-  # manually handle interval coverage
-  if ("quantile" %in% available_output_types) {
-    result$output_type[grepl(pattern = "^interval_coverage_", x = metrics)] <- "quantile"
-  }
-
-  # other metrics
-  for (output_type in available_output_types) {
-    supported_metrics <- get_standard_metrics(output_type, is_ordinal)
-    result$output_type[result$metric %in% supported_metrics] <- output_type
-  }
-
-  return(result)
-}
-
-
-#' Get the standard metrics that are supported for a given output type
-#' @noRd
-get_standard_metrics <- function(output_type, is_ordinal) {
-  return(
-    switch(
-      output_type,
-      mean = "se_point",
-      median = "ae_point",
-      quantile = names(scoringutils::get_metrics(scoringutils::example_quantile)),
-      pmf = if (is_ordinal) {
-        names(scoringutils::get_metrics(scoringutils::example_ordinal))
-      } else {
-        names(scoringutils::get_metrics(scoringutils::example_nominal))
-      },
-      cdf = NULL,
-      sample = NULL
-    )
-  )
 }
 
 
