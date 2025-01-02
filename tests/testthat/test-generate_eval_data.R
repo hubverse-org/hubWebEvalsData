@@ -8,7 +8,7 @@ check_exp_scores_for_window <- function(out_path, window_name, model_out_tbl, or
   # check that the output files were created and have the expected contents
   # no disaggregation
   scores_path <- file.path(out_path, "wk inc flu hosp", window_name, "scores.csv")
-  expect_true(file.exists(scores_path))
+  testthat::expect_true(file.exists(scores_path))
 
   actual_scores <- read.csv(scores_path)
   expected_mean_scores <- hubEvals::score_model_out(
@@ -32,13 +32,13 @@ check_exp_scores_for_window <- function(out_path, window_name, model_out_tbl, or
   expected_scores <- expected_mean_scores |>
     dplyr::left_join(expected_median_scores, by = "model_id") |>
     dplyr::left_join(expected_quantile_scores, by = "model_id")
-  expect_df_equal_up_to_order(actual_scores, expected_scores, ignore_attr = TRUE)
+  expect_df_equal_up_to_order(actual_scores, expected_scores, ignore_attr = TRUE) # nolint: object_usage_linter
 
   for (by in c("location", "reference_date", "horizon", "target_end_date")) {
     # check that the output files were created and have the expected contents
     # disaggregated by `by`
     scores_path <- file.path(out_path, "wk inc flu hosp", window_name, by, "scores.csv")
-    expect_true(file.exists(scores_path))
+    testthat::expect_true(file.exists(scores_path))
 
     actual_scores <- read.csv(scores_path)
     if (by %in% c("reference_date", "target_end_date")) {
@@ -46,19 +46,19 @@ check_exp_scores_for_window <- function(out_path, window_name, model_out_tbl, or
     }
 
     expected_mean_scores <- hubEvals::score_model_out(
-      model_out_tbl = model_out_tbl |> dplyr::filter(output_type == "mean"),
+      model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "mean"),
       oracle_output = oracle_output,
       metrics = "se_point",
       by = c("model_id", by)
     )
     expected_median_scores <- hubEvals::score_model_out(
-      model_out_tbl = model_out_tbl |> dplyr::filter(output_type == "median"),
+      model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "median"),
       oracle_output = oracle_output,
       metrics = "ae_point",
       by = c("model_id", by)
     )
     expected_quantile_scores <- hubEvals::score_model_out(
-      model_out_tbl = model_out_tbl |> dplyr::filter(output_type == "quantile"),
+      model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "quantile"),
       oracle_output = oracle_output,
       metrics = c("wis", "ae_median", "interval_coverage_50", "interval_coverage_95"),
       by = c("model_id", by)
@@ -66,7 +66,7 @@ check_exp_scores_for_window <- function(out_path, window_name, model_out_tbl, or
     expected_scores <- expected_mean_scores |>
       dplyr::left_join(expected_median_scores, by = c("model_id", by)) |>
       dplyr::left_join(expected_quantile_scores, by = c("model_id", by))
-    expect_df_equal_up_to_order(actual_scores, expected_scores, ignore_attr = TRUE)
+    expect_df_equal_up_to_order(actual_scores, expected_scores, ignore_attr = TRUE) # nolint: object_usage_linter
   }
 }
 
