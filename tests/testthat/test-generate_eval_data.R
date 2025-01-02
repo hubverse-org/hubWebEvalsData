@@ -12,19 +12,19 @@ check_exp_scores_for_window <- function(out_path, window_name, model_out_tbl, or
 
   actual_scores <- read.csv(scores_path)
   expected_mean_scores <- hubEvals::score_model_out(
-    model_out_tbl = model_out_tbl |> dplyr::filter(output_type == "mean"),
+    model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "mean"),
     oracle_output = oracle_output,
     metrics = "se_point",
     by = "model_id"
   )
   expected_median_scores <- hubEvals::score_model_out(
-    model_out_tbl = model_out_tbl |> dplyr::filter(output_type == "median"),
+    model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "median"),
     oracle_output = oracle_output,
     metrics = "ae_point",
     by = "model_id"
   )
   expected_quantile_scores <- hubEvals::score_model_out(
-    model_out_tbl = model_out_tbl |> dplyr::filter(output_type == "quantile"),
+    model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "quantile"),
     oracle_output = oracle_output,
     metrics = c("wis", "ae_median", "interval_coverage_50", "interval_coverage_95"),
     by = "model_id"
