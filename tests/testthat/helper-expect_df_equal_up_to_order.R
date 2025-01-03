@@ -8,6 +8,7 @@ expect_df_equal_up_to_order <- function(df_act, df_exp, ignore_attr = FALSE, ...
   testthat::expect_equal(
     dplyr::arrange(df_act, dplyr::across(dplyr::all_of(cols))),
     dplyr::arrange(df_exp, dplyr::across(dplyr::all_of(cols))),
-    ignore_attr = ignore_attr
+    ignore_attr = ignore_attr,
+    ...
   )
 }
