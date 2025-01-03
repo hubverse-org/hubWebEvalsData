@@ -34,7 +34,8 @@ generate_target_eval_data <- function(hub_path,
                                       target) {
   target_id <- target$target_id
   metrics <- target$metrics
-  disaggregate_by <- target$disaggregate_by
+  # adding `NULL` at the beginning will calculate overall scores
+  disaggregate_by <- c(list(NULL), as.list(target$disaggregate_by))
   eval_windows <- config$eval_windows
 
   task_groups_w_target <- get_task_groups_w_target(hub_path, target_id)
@@ -44,7 +45,7 @@ generate_target_eval_data <- function(hub_path,
     model_out_tbl <- load_model_out_in_window(hub_path, target$target_id, eval_window)
 
     # calculate overall scores followed by scores disaggregated by a task ID variable.
-    for (by in c(list(NULL), disaggregate_by)) {
+    for (by in disaggregate_by) {
       get_and_save_scores(
         model_out_tbl = model_out_tbl,
         oracle_output = oracle_output,
