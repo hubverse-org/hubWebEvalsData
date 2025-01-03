@@ -73,6 +73,7 @@ get_output_type_ids_for_type <- function(task_groups, output_type) {
     }
   )
 
+  # Small groups should contain subsets of the largest group, so this is our reference. 
   output_type_ids <- output_type_ids_by_group[[which.max(lengths(output_type_ids_by_group))]]
 
   # check that the output type id values in each group are a (possibly improper)
