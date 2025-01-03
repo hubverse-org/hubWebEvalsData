@@ -87,7 +87,7 @@ get_and_save_scores <- function(model_out_tbl, oracle_output, metric_name_to_out
 
   target_window_by_out_path <- file.path(out_path, target_id, window_name)
   if (!is.null(by)) {
-    target_window_by_out_path <- file.path(target_window_out_path, by)
+    target_window_by_out_path <- file.path(target_window_by_out_path, by)
   }
   if (!dir.exists(target_window_by_out_path)) {
     dir.create(target_window_by_out_path, recursive = TRUE)
