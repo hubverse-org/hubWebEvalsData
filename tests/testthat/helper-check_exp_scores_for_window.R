@@ -19,9 +19,11 @@ check_exp_scores_for_window <- function(out_path, window_name, model_out_tbl, or
 
     actual_scores <- read.csv(scores_path)
 
+    file_name <- paste0("scores_", window_name, ifelse(is.null(by), "", paste0("_by_", by)), ".csv")
+    file_name <- gsub(" ", "_", file_name)
     expected_scores_path <- testthat::test_path(
       "testdata", "expected-scores",
-      paste0("scores_", window_name, ifelse(is.null(by), "", paste0("_by_", by)), ".csv")
+      file_name
     )
     expected_scores <- read.csv(expected_scores_path)
     if (!include_rel) {

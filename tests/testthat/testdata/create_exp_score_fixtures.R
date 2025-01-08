@@ -47,6 +47,7 @@ make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
     }
 
     file_name <- paste0("scores_", window_name, ifelse(is.null(by), "", paste0("_by_", by)), ".csv")
+    file_name <- gsub(" ", "_", file_name)
     write.csv(expected_scores, file = file.path(save_path, file_name), row.names = FALSE)
   }
 }
