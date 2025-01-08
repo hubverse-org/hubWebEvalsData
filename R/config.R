@@ -149,6 +149,27 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
       )
     }
 
+    # check that relative_metrics is a subset of metrics
+    extra_relative_metrics <- setdiff(
+      target$relative_metrics,
+      target$metrics
+    )
+    if (length(extra_relative_metrics) > 0) {
+      raise_config_error(
+        c(
+          cli::format_inline(
+            "Requested relative metrics for metrics that were not requested ",
+            "for {.arg target_id} {.val {target_id}}."
+          ),
+          "i" = cli::format_inline("Requested metric{?s}: {.val {target$metrics}}."),
+          "x" = cli::format_inline(
+            "Relative metric{?s} not found in the requested metrics: ",
+            "{.val {extra_relative_metrics}}."
+          )
+        )
+      )
+    }
+
     # check that disaggregate_by are task id variable names
     extra_disaggregate_by <- setdiff(
       target$disaggregate_by,

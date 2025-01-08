@@ -1,0 +1,9 @@
+targets:
+- target_id: wk inc flu hosp
+  metrics:
+  - wis
+  disaggregate_by:
+  - location
+eval_windows:
+- window_name: Full season
+  min_round_id: '2023-01-21'
