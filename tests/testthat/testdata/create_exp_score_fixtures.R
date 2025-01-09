@@ -1,8 +1,10 @@
+library(rlang)
+
 hub_path <- testthat::test_path("testdata", "ecfh")
 model_out_tbl <- hubData::connect_hub(hub_path) |>
   dplyr::collect()
 oracle_output <- read.csv(
-  test_path("testdata", "ecfh", "target-data", "oracle-output.csv")
+  testthat::test_path("testdata", "ecfh", "target-data", "oracle-output.csv")
 )
 oracle_output[["target_end_date"]] <- as.Date(oracle_output[["target_end_date"]])
 
