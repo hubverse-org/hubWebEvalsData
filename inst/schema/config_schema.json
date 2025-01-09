@@ -22,24 +22,37 @@
                     },
                     "metrics": {
                         "description": "Names of metrics to compute for this target.  These should be names of metrics supported by hubEvals::score_model_out.",
-                        "type": "array",
+                        "type": ["string", "array"],
                         "items": {
                             "type": "string"
                         },
                         "minItems": 1
                     },
+                    "relative_metrics": {
+                        "description": "Optional names of metrics for which to compute pairwise relative skill for this target.  These should be a subset of the metrics for the target.",
+                        "type": ["string", "array"],
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 0
+                    },
+                    "baseline": {
+                        "description": "Name of the model to use as a baseline for relative skill metrics for this target. Required if relative_metrics is provided.",
+                        "type": "string",
+                        "minItems": 0
+                    },
                     "disaggregate_by": {
                         "description": "Optional list of task id columns to disaggregate by. Aggregated scores for each model will always be computed.",
-                        "type": "array",
+                        "type": ["string", "array"],
                         "items": {
                             "type": "string"
                         }
                     }
                 },
-                "required": [
-                    "target_id",
-                    "metrics"
-                ]
+                "required": ["target_id", "metrics"],
+                "dependentRequired": {
+                    "relative_metrics": ["baseline"]
+                }
             }
         },
         "eval_windows": {

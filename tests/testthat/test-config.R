@@ -13,6 +13,34 @@ test_that(
 )
 
 test_that(
+  "read_webevals_config succeeds, valid yaml file with length 1 arrays",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_snapshot(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_valid_length_one_arrays.yaml")
+      )
+    )
+  }
+)
+
+test_that(
+  "read_webevals_config succeeds, valid yaml file with relative metrics",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_snapshot(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_valid_rel_metrics.yaml")
+      )
+    )
+  }
+)
+
+test_that(
   "read_webevals_config succeeds, valid yaml file with no min_round_id",
   {
     hub_path <- test_path("testdata", "ecfh")
@@ -85,7 +113,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config succeeds, round_id_from_variable false",
+  "read_webevals_config fails, round_id_from_variable false",
   {
     hub_path <- test_path("testdata", "test_hub_invalid_rifv_F")
     expect_error(
@@ -200,6 +228,36 @@ test_that(
                   "config_invalid_task_id_text_missing.yaml")
       ),
       regexp = 'For task id variable "location", missing the following values: "US" and "25"'
+    )
+  }
+)
+
+test_that(
+  "read_webevals_config fails, invalid relative metrics, not a subset of metrics",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_error(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_invalid_rel_metrics_non_metric.yaml")
+      ),
+      regexp = 'Relative metric not found in the requested metrics: "log_score".'
+    )
+  }
+)
+
+test_that(
+  "read_webevals_config fails, invalid relative metrics, no baseline",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_error(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_invalid_rel_metrics_no_baseline.yaml")
+      ),
+      regexp = "must have property baseline when property relative_metrics is present"
     )
   }
 )

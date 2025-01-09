@@ -34,6 +34,9 @@ generate_target_eval_data <- function(hub_path,
                                       target) {
   target_id <- target$target_id
   metrics <- target$metrics
+  # if relative_metrics and baseline are not provided, the are NULL
+  relative_metrics <- target$relative_metrics
+  baseline <- target$baseline
   # adding `NULL` at the beginning will calculate overall scores
   disaggregate_by <- c(list(NULL), as.list(target$disaggregate_by))
   eval_windows <- config$eval_windows
@@ -50,6 +53,8 @@ generate_target_eval_data <- function(hub_path,
         model_out_tbl = model_out_tbl,
         oracle_output = oracle_output,
         metric_name_to_output_type = metric_name_to_output_type,
+        relative_metrics = relative_metrics,
+        baseline = baseline,
         target_id = target_id,
         window_name = eval_window$window_name,
         by = by,
@@ -70,18 +75,22 @@ generate_target_eval_data <- function(hub_path,
 #' out_path/target_id/window_name/by/scores.csv
 #' @noRd
 get_and_save_scores <- function(model_out_tbl, oracle_output, metric_name_to_output_type,
+                                relative_metrics, baseline,
                                 target_id, window_name, by,
                                 out_path) {
   # Iterate over the output types and calculate scores for each
   scores <- purrr::map(
     unique(metric_name_to_output_type$output_type),
-    ~ hubEvals::score_model_out(
-      model_out_tbl = model_out_tbl |> dplyr::filter(output_type == !!.x),
+    ~ get_scores_for_output_type(
+      model_out_tbl = model_out_tbl,
       oracle_output = oracle_output,
-      metrics = metric_name_to_output_type$metric[
-        metric_name_to_output_type$output_type == .x
-      ],
-      by = c("model_id", by)
+      metric_name_to_output_type = metric_name_to_output_type,
+      relative_metrics = relative_metrics,
+      baseline = baseline,
+      target_id = target_id,
+      window_name = window_name,
+      by = by,
+      output_type = .x
     )
   ) |>
     purrr::reduce(dplyr::left_join, by = c("model_id", by))
@@ -96,4 +105,28 @@ get_and_save_scores <- function(model_out_tbl, oracle_output, metric_name_to_out
   utils::write.csv(scores,
                    file = file.path(target_window_by_out_path, "scores.csv"),
                    row.names = FALSE)
+}
+
+
+#' Get scores for a target in a given evaluation window for a specific output type.
+get_scores_for_output_type <- function(model_out_tbl, oracle_output, metric_name_to_output_type,
+                                       relative_metrics, baseline,
+                                       target_id, window_name, by,
+                                       output_type) {
+  metrics <- metric_name_to_output_type$metric[
+    metric_name_to_output_type$output_type == output_type
+  ]
+  if (!is.null(relative_metrics)) {
+    relative_metrics <- relative_metrics[relative_metrics %in% metrics]
+  }
+  scores <- hubEvals::score_model_out(
+    model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == !!output_type),
+    oracle_output = oracle_output,
+    metrics = metrics,
+    relative_metrics = relative_metrics,
+    baseline = baseline,
+    by = c("model_id", by)
+  )
+
+  return(scores)
 }
