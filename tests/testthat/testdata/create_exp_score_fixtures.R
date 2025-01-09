@@ -1,8 +1,3 @@
-library(testthat)
-library(hubData)
-library(hubEvals)
-library(dplyr)
-
 hub_path <- testthat::test_path("testdata", "ecfh")
 model_out_tbl <- hubData::connect_hub(hub_path) |>
   dplyr::collect()
