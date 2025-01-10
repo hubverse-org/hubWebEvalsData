@@ -9,7 +9,8 @@ oracle_output <- read.csv(
 oracle_output[["target_end_date"]] <- as.Date(oracle_output[["target_end_date"]])
 
 make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
-  # get number of unique levels for each task id
+  # get number of unique levels for each "non-dependent" task id
+  # (i.e., not target end date)
   nondependent_task_ids <- c("location", "reference_date", "horizon")
   n_task_id_levels <- purrr::map_int(
     nondependent_task_ids,
@@ -27,6 +28,9 @@ make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
       baseline = "FS-base",
       by = c("model_id", by)
     )
+    expected_mean_scores <- as.data.frame(expected_mean_scores)[
+      c("model_id", by, "se_point_scaled_relative_skill", "se_point")
+    ]
     expected_median_scores <- hubEvals::score_model_out(
       model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "median"),
       oracle_output = oracle_output,
@@ -35,6 +39,9 @@ make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
       baseline = "FS-base",
       by = c("model_id", by)
     )
+    expected_median_scores <- as.data.frame(expected_median_scores)[
+      c("model_id", by, "ae_point_scaled_relative_skill", "ae_point")
+    ]
     expected_quantile_scores <- hubEvals::score_model_out(
       model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "quantile"),
       oracle_output = oracle_output,
@@ -43,16 +50,15 @@ make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
       baseline = "FS-base",
       by = c("model_id", by)
     )
+    expected_quantile_scores <- as.data.frame(expected_quantile_scores)[
+      c("model_id", by,
+        "wis_scaled_relative_skill", "wis",
+        "ae_median_scaled_relative_skill", "ae_median",
+        "interval_coverage_50", "interval_coverage_95")
+    ]
     expected_scores <- expected_mean_scores |>
       dplyr::left_join(expected_median_scores, by = c("model_id", by)) |>
       dplyr::left_join(expected_quantile_scores, by = c("model_id", by))
-
-    # drop relative_skill metrics
-    expected_scores <- expected_scores |>
-      dplyr::select(!dplyr::all_of(
-        c("se_point_relative_skill", "ae_point_relative_skill",
-          "wis_relative_skill", "ae_median_relative_skill")
-      ))
 
     # add number of scored prediction tasks per model/by group
     if (is.null(by)) {
