@@ -38,6 +38,13 @@ make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
       dplyr::left_join(expected_median_scores, by = c("model_id", by)) |>
       dplyr::left_join(expected_quantile_scores, by = c("model_id", by))
 
+    # drop relative_skill metrics
+    expected_scores <- expected_scores |>
+      dplyr::select(!dplyr::all_of(
+        c("se_point_relative_skill", "ae_point_relative_skill",
+          "wis_relative_skill", "ae_median_relative_skill")
+      ))
+
     save_path <- testthat::test_path("testdata", "expected-scores")
     if (!dir.exists(save_path)) {
       dir.create(save_path, recursive = TRUE)

@@ -128,5 +128,11 @@ get_scores_for_output_type <- function(model_out_tbl, oracle_output, metric_name
     by = c("model_id", by)
   )
 
+  # Return only the scaled relative metrics, not the unscaled ones
+  if (!is.null(relative_metrics)) {
+    rel_skill_colnames <- paste0(relative_metrics, "_relative_skill")
+    scores <- dplyr::select(scores, !dplyr::all_of(rel_skill_colnames))
+  }
+
   return(scores)
 }
