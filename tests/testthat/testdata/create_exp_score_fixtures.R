@@ -9,7 +9,16 @@ oracle_output <- read.csv(
 oracle_output[["target_end_date"]] <- as.Date(oracle_output[["target_end_date"]])
 
 make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
+  # get number of unique levels for each task id
+  nondependent_task_ids <- c("location", "reference_date", "horizon")
+  n_task_id_levels <- purrr::map_int(
+    nondependent_task_ids,
+    ~ length(unique(model_out_tbl[[.x]]))
+  )
+  names(n_task_id_levels) <- nondependent_task_ids
+
   for (by in list(NULL, "location", "reference_date", "horizon", "target_end_date")) {
+    # compute scores using hubEvals
     expected_mean_scores <- hubEvals::score_model_out(
       model_out_tbl = model_out_tbl |> dplyr::filter(.data[["output_type"]] == "mean"),
       oracle_output = oracle_output,
@@ -44,6 +53,25 @@ make_score_fixtures_one_window <- function(window_name, model_out_tbl) {
         c("se_point_relative_skill", "ae_point_relative_skill",
           "wis_relative_skill", "ae_median_relative_skill")
       ))
+
+    # add number of scored prediction tasks per model/by group
+    if (is.null(by)) {
+      # group only by model_id
+      # n_tasks is n_locations * n_reference_dates * n_horizons
+      n_tasks <- prod(n_task_id_levels)
+    } else if (by %in% nondependent_task_ids) {
+      # group by location, horizon, or target_end_date
+      # n_tasks is the product of the number of levels for the
+      # "non-by" variables.  For example, if by = horizon, n_tasks = n_locations * n_reference_dates
+      n_tasks <- prod(n_task_id_levels[setdiff(nondependent_task_ids, by)])
+    } else {
+      # group by target_end_date
+      # with our setup for test data, n_tasks is the number of locations
+      # each horizon/reference date combination corresponds to a unique target_end_date
+      n_tasks <- n_task_id_levels["location"]
+    }
+    expected_scores <- expected_scores |>
+      dplyr::mutate(n = n_tasks)
 
     save_path <- testthat::test_path("testdata", "expected-scores")
     if (!dir.exists(save_path)) {
