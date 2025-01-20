@@ -95,6 +95,19 @@ get_and_save_scores <- function(model_out_tbl, oracle_output, metric_name_to_out
   ) |>
     purrr::reduce(dplyr::left_join, by = c("model_id", by))
 
+  # Add the number of prediction tasks that were scored within each model/by group
+  # After dropping output_type, output_type_id, and value, we are left with model_id
+  # and task id columns.  The number of prediction tasks is the number of distinct
+  # rows within each group.
+  group_cols <- c("model_id", by)
+  n_tasks_by_group <- model_out_tbl |>
+    dplyr::select(!dplyr::all_of(c("output_type", "output_type_id", "value"))) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
+    dplyr::distinct() |>
+    dplyr::summarize(n = dplyr::n())
+  scores <- scores |> dplyr::left_join(n_tasks_by_group, by = group_cols)
+
+  # Save the scores to a .csv file
   target_window_by_out_path <- file.path(out_path, target_id, window_name)
   if (!is.null(by)) {
     target_window_by_out_path <- file.path(target_window_by_out_path, by)
@@ -127,6 +140,29 @@ get_scores_for_output_type <- function(model_out_tbl, oracle_output, metric_name
     baseline = baseline,
     by = c("model_id", by)
   )
+
+  if (!is.null(relative_metrics)) {
+    # Return only the scaled relative metrics, not the unscaled ones
+    rel_skill_colnames <- paste0(relative_metrics, "_relative_skill")
+    scores <- dplyr::select(scores, !dplyr::all_of(rel_skill_colnames))
+
+    # Place scaled relative metric columns before corresponding metric columns
+    # relative_metrics is a subset of metrics
+    ordered_metric_cols <- purrr::map(
+      metrics,
+      function(metric) {
+        c(
+          if (metric %in% relative_metrics) paste0(metric, "_scaled_relative_skill") else NULL,
+          metric
+        )
+      }
+    ) |>
+      unlist()
+    scores <- scores |>
+      dplyr::select(dplyr::all_of(
+        c("model_id", by, ordered_metric_cols)
+      ))
+  }
 
   return(scores)
 }
