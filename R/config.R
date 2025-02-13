@@ -1,4 +1,4 @@
-#' Load and validate a webevals config file
+#' Load and validate a predevals config file
 #'
 #' @param hub_path A path to the hub.
 #' @param config_path A path to a yaml file that specifies the configuration
@@ -15,7 +15,7 @@ read_config <- function(hub_path, config_path) {
       # attempting to read the config file: typically the file does not
       # exist or can't be parsed by read_yaml().
       cli::cli_abort(c(
-        "Error reading webevals config file at {.val {config_path}}:",
+        "Error reading predevals config file at {.val {config_path}}:",
         conditionMessage(e)
       ))
     }
@@ -27,7 +27,7 @@ read_config <- function(hub_path, config_path) {
 }
 
 
-#' Validate a webevals config object
+#' Validate a predevals config object
 #' @noRd
 validate_config <- function(hub_path, config) {
   validate_config_vs_schema(config)
@@ -35,18 +35,11 @@ validate_config <- function(hub_path, config) {
 }
 
 
-#' Validate a webevals config object against the config schema
+#' Validate a predevals config object against the config schema
 #' @noRd
 validate_config_vs_schema <- function(config) {
   config_json <- jsonlite::toJSON(config, auto_unbox = TRUE)
-
-  schema_path <- system.file("schema", "config_schema.json",
-                             package = "hubPredEvalsData")
-
-  schema_json <- jsonlite::read_json(schema_path,
-    auto_unbox = TRUE
-  ) |>
-    jsonlite::toJSON(auto_unbox = TRUE)
+  schema_json <- load_schema_json(config)
 
   valid <- jsonvalidate::json_validate(config_json, schema_json,
     engine = "ajv", verbose = TRUE,
@@ -73,46 +66,107 @@ validate_config_vs_schema <- function(config) {
 }
 
 
-#' Validate a webevals config object against the hub tasks config
+#' Load the schema for a predevals config file, based on the schema version
+#' specified in that config. It is not expected that the config has been
+#' validated yet, other than that it can be read in by yaml::read_yaml. If the
+#' config does not have a schema_version property or the value of that property
+#' is malformatted, this function throws an error.
+#'
+#' @param config_json list of schema entries as returned by yaml::read_yaml
+#'
+#' @noRd 
+load_schema_json <- function(config) {
+  if (! "schema_version" %in% names(config)) {
+    raise_config_error("The predevals config file is required to contain a `schema_version` property.")
+  }
+
+  if (! is.character(config$schema_version) || length(config$schema_version) != 1) {
+    raise_config_error("The `schema_version` property of the config schema must be a string.")
+  }
+
+  schema_version <- hubUtils::extract_schema_version(config$schema_version)
+  if (is.na(schema_version)) {
+    raise_config_error(
+      cli::format_inline(
+        "Invalid `schema_version` property of the config schema. ",
+        "Must be a URL to a version of the hubPredEvalsData config_schema.json file."
+      )
+    )
+  }
+
+  available_versions <- list.dirs(
+    system.file("schema", package = "hubPredEvalsData"),
+    full.names = FALSE,
+    recursive = FALSE
+  )
+  if (! schema_version %in% available_versions) {
+    raise_config_error(
+      c(
+        cli::format_inline(
+          "Invalid predevals schema version."
+        ),
+        "x" = cli::format_inline(
+          "Specified version: {.val {schema_version}}."
+        ),
+        "i" = cli::format_inline(
+          "Valid versions: {.val {available_versions}}"
+        )
+      )
+    )
+  }
+
+  schema_path <- system.file("schema", schema_version, "config_schema.json",
+                             package = "hubPredEvalsData")
+
+  schema_json <- jsonlite::read_json(schema_path,
+    auto_unbox = TRUE
+  ) |>
+    jsonlite::toJSON(auto_unbox = TRUE)
+
+  return(schema_json)
+}
+
+
+#' Validate a predevals config object against the hub tasks config
 #' @noRd
-validate_config_vs_hub_tasks <- function(hub_path, webevals_config) {
+validate_config_vs_hub_tasks <- function(hub_path, predevals_config) {
   hub_tasks_config <- hubUtils::read_config(hub_path, config = "tasks")
   task_id_names <- hubUtils::get_task_id_names(hub_tasks_config)
 
   if (length(hub_tasks_config[["rounds"]]) > 1) {
-    raise_config_error("hubWebevals only supports hubs with a single round group specified in `tasks.json`.")
+    raise_config_error("hubPredEvalsData only supports hubs with a single round group specified in `tasks.json`.")
   }
   if (!hub_tasks_config[["rounds"]][[1]][["round_id_from_variable"]]) {
-    raise_config_error("hubWebevals only supports hubs with `round_id_from_variable` set to `true` in `tasks.json`.")
+    raise_config_error("hubPredEvalsData only supports hubs with `round_id_from_variable` set to `true` in `tasks.json`.")
   }
 
   task_groups <- hub_tasks_config[["rounds"]][[1]][["model_tasks"]]
 
   # checks for targets
-  validate_config_targets(webevals_config, task_groups, task_id_names)
+  validate_config_targets(predevals_config, task_groups, task_id_names)
 
   # checks for eval_windows
-  validate_config_eval_windows(webevals_config, hub_tasks_config)
+  validate_config_eval_windows(predevals_config, hub_tasks_config)
 
   # checks for task_id_text
-  validate_config_task_id_text(webevals_config, task_groups, task_id_names)
+  validate_config_task_id_text(predevals_config, task_groups, task_id_names)
 }
 
 
-#' Validate the targets in a webevals config object. For each target, check that:
-#' - target_id in the webevals config appears in the hub tasks as a target_id
+#' Validate the targets in a predevals config object. For each target, check that:
+#' - target_id in the predevals config appears in the hub tasks as a target_id
 #' - metrics are valid for the available output types for that target
 #' - disaggregate_by entries are task id variable names
 #'
 #' @noRd
-validate_config_targets <- function(webevals_config, task_groups, task_id_names) {
-  for (target in webevals_config$targets) {
+validate_config_targets <- function(predevals_config, task_groups, task_id_names) {
+  for (target in predevals_config$targets) {
     target_id <- target$target_id
 
     # get task groups for this target
     task_groups_w_target <- filter_task_groups_to_target(task_groups, target_id)
 
-    # check that target_id in the webevals config appears in the hub tasks
+    # check that target_id in the predevals config appears in the hub tasks
     if (length(task_groups_w_target) == 0) {
       raise_config_error(
         cli::format_inline("Target id {.val {target_id}} not found in any task group.")
@@ -187,14 +241,14 @@ validate_config_targets <- function(webevals_config, task_groups, task_id_names)
 }
 
 
-#' Validate the eval_windows in a webevals config object
-#'  - check that min_round_id specified in webevals config is a valid round_id
+#' Validate the eval_windows in a predevals config object
+#'  - check that min_round_id specified in predevals config is a valid round_id
 #'    for the hub
 #'
 #' @noRd
-validate_config_eval_windows <- function(webevals_config, hub_tasks_config) {
+validate_config_eval_windows <- function(predevals_config, hub_tasks_config) {
   hub_round_ids <- hubUtils::get_round_ids(hub_tasks_config)
-  for (eval_window in webevals_config$eval_windows) {
+  for (eval_window in predevals_config$eval_windows) {
     # check that min_round_id is a valid round_id
     # only do this check if eval_window$min_round_id is specified
     if (!"min_round_id" %in% names(eval_window)) {
@@ -212,15 +266,15 @@ validate_config_eval_windows <- function(webevals_config, hub_tasks_config) {
 }
 
 
-#' Validate the task_id_text in a webevals config object
+#' Validate the task_id_text in a predevals config object
 #' - check that all task_id_text items are valid task id variable names
 #' - check that all values of the task id variable in the hub appear as task_id_text item keys
 #'
 #' @noRd
-validate_config_task_id_text <- function(webevals_config, task_groups, task_id_names) {
+validate_config_task_id_text <- function(predevals_config, task_groups, task_id_names) {
   # all task_id_text items must be valid task id variable names
   extra_task_id_text_names <- setdiff(
-    names(webevals_config$task_id_text),
+    names(predevals_config$task_id_text),
     task_id_names
   )
   if (length(extra_task_id_text_names) > 0) {
@@ -233,9 +287,9 @@ validate_config_task_id_text <- function(webevals_config, task_groups, task_id_n
   }
 
   # all values of the task id variable in the hub must appear as task_id_text item keys
-  for (i in seq_along(webevals_config$task_id_text)) {
-    task_id_text_item <- webevals_config$task_id_text[[i]]
-    task_id_name <- names(webevals_config$task_id_text)[i]
+  for (i in seq_along(predevals_config$task_id_text)) {
+    task_id_text_item <- predevals_config$task_id_text[[i]]
+    task_id_name <- names(predevals_config$task_id_text)[i]
     hub_task_id_values <- purrr::map(
       task_groups,
       function(task_group) {
@@ -264,7 +318,7 @@ validate_config_task_id_text <- function(webevals_config, task_groups, task_id_n
 }
 
 
-#' Raise an error related to the webevals config file
+#' Raise an error related to the predevals config file
 #' @noRd
 raise_config_error <- function(msgs) {
   call <- rlang::caller_call()
@@ -273,7 +327,7 @@ raise_config_error <- function(msgs) {
   }
 
   cli::cli_abort(c(
-    "Error in webevals config file:",
+    "Error in predevals config file:",
     msgs
   ))
 }

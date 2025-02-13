@@ -122,6 +122,7 @@ get_and_save_scores <- function(model_out_tbl, oracle_output, metric_name_to_out
 
 
 #' Get scores for a target in a given evaluation window for a specific output type.
+#' @noRd
 get_scores_for_output_type <- function(model_out_tbl, oracle_output, metric_name_to_output_type,
                                        relative_metrics, baseline,
                                        target_id, window_name, by,
