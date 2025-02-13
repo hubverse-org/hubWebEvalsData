@@ -6,6 +6,14 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
+        "schema_version": {
+            "description": "URL to a version of the hubPredEvalsData config_schema.json file. Used to declare the schema version a 'predevals-config.yml' file is compatible with. The URL provided should be the URL to the raw content of the schema file on GitHub.",
+            "examples": [
+                "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+            ],
+            "type": "string",
+            "format": "uri"
+        },
         "targets": {
             "description": "Targets for which to compute evaluation metrics, as well as a specification of how predictions for each target should be computed.",
             "type": "array",
