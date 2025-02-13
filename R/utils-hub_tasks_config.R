@@ -27,7 +27,7 @@ filter_task_groups_to_target <- function(task_groups, target_id) {
     function(task_group) {
       task_group$target_metadata <- purrr::keep(task_group$target_metadata,
                                                 ~ .x$target_id == target_id)
-      return(task_group)
+      task_group
     }
   )
 
