@@ -34,26 +34,26 @@ get_metric_name_to_output_type <- function(task_groups_w_target, metrics) {
     result$output_type[result$metric %in% supported_metrics] <- output_type
   }
 
-  return(result)
+  result
 }
 
 
 #' Get the standard metrics that are supported for a given output type
 #' @noRd
 get_standard_metrics <- function(output_type, target_is_ordinal) {
-  return(
-    switch(
-      output_type,
-      mean = "se_point",
-      median = "ae_point",
-      quantile = names(scoringutils::get_metrics(scoringutils::example_quantile)),
-      pmf = if (target_is_ordinal) {
-        names(scoringutils::get_metrics(scoringutils::example_ordinal))
-      } else {
-        names(scoringutils::get_metrics(scoringutils::example_nominal))
-      },
-      cdf = NULL,
-      sample = NULL
-    )
+  result <- switch(
+    output_type,
+    mean = "se_point",
+    median = "ae_point",
+    quantile = names(scoringutils::get_metrics(scoringutils::example_quantile)),
+    pmf = if (target_is_ordinal) {
+      names(scoringutils::get_metrics(scoringutils::example_ordinal))
+    } else {
+      names(scoringutils::get_metrics(scoringutils::example_nominal))
+    },
+    cdf = NULL,
+    sample = NULL
   )
+
+  result
 }

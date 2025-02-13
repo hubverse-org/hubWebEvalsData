@@ -23,7 +23,7 @@ read_config <- function(hub_path, config_path) {
 
   validate_config(hub_path, config)
 
-  return(config)
+  config
 }
 
 
@@ -74,7 +74,7 @@ validate_config_vs_schema <- function(config) {
 #'
 #' @param config_json list of schema entries as returned by yaml::read_yaml
 #'
-#' @noRd 
+#' @noRd
 load_schema_json <- function(config) {
   if (! "schema_version" %in% names(config)) {
     raise_config_error("The predevals config file is required to contain a `schema_version` property.")
@@ -123,7 +123,7 @@ load_schema_json <- function(config) {
   ) |>
     jsonlite::toJSON(auto_unbox = TRUE)
 
-  return(schema_json)
+  schema_json
 }
 
 
@@ -137,7 +137,9 @@ validate_config_vs_hub_tasks <- function(hub_path, predevals_config) {
     raise_config_error("hubPredEvalsData only supports hubs with a single round group specified in `tasks.json`.")
   }
   if (!hub_tasks_config[["rounds"]][[1]][["round_id_from_variable"]]) {
-    raise_config_error("hubPredEvalsData only supports hubs with `round_id_from_variable` set to `true` in `tasks.json`.")
+    raise_config_error(
+      "hubPredEvalsData only supports hubs with `round_id_from_variable` set to `true` in `tasks.json`."
+    )
   }
 
   task_groups <- hub_tasks_config[["rounds"]][[1]][["model_tasks"]]

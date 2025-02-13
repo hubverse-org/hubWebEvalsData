@@ -10,7 +10,8 @@ get_task_groups_w_target <- function(hub_path, target_id) {
   round_ids <- hubUtils::get_round_ids(hub_tasks_config)
   task_groups <- hubUtils::get_round_model_tasks(hub_tasks_config, round_ids[1])
   task_groups_w_target <- filter_task_groups_to_target(task_groups, target_id)
-  return(task_groups_w_target)
+
+  task_groups_w_target
 }
 
 
@@ -33,7 +34,7 @@ filter_task_groups_to_target <- function(task_groups, target_id) {
   # Remove task groups that don't contain the target_id
   task_groups <- purrr::keep(task_groups, ~ length(.x$target_metadata) > 0)
 
-  return(task_groups)
+  task_groups
 }
 
 
@@ -46,7 +47,8 @@ get_output_types <- function(task_groups) {
   ) |>
     unlist() |>
     unique()
-  return(output_types)
+
+  output_types
 }
 
 
@@ -56,7 +58,8 @@ is_target_ordinal <- function(task_groups_w_target) {
   # The task_groups_w_target has been filtered to a single target,
   # so we can just check the target_type of the first entry
   target_type <- task_groups_w_target[[1]]$target_metadata[[1]]$target_type
-  return(target_type == "ordinal")
+
+  target_type == "ordinal"
 }
 
 
@@ -102,5 +105,5 @@ get_output_type_ids_for_type <- function(task_groups, output_type) {
     }
   }
 
-  return(output_type_ids)
+  output_type_ids
 }

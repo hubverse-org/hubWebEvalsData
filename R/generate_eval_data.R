@@ -165,5 +165,5 @@ get_scores_for_output_type <- function(model_out_tbl, oracle_output, metric_name
       ))
   }
 
-  return(scores)
+  scores
 }
