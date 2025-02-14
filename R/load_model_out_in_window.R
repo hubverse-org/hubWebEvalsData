@@ -49,5 +49,5 @@ load_model_out_in_window <- function(hub_path, target_id, eval_window) {
       dplyr::filter(!!rlang::sym(round_id_var_name) %in% round_ids)
   }
 
-  return(model_out_tbl)
+  model_out_tbl
 }

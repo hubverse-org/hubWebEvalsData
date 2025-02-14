@@ -1,8 +1,11 @@
-# read_webevals_config succeeds, valid yaml file
+# read_predevals_config succeeds, valid yaml file
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs", "config_valid.yaml"))
     Output
+      $schema_version
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      
       $targets
       $targets[[1]]
       $targets[[1]]$target_id
@@ -228,12 +231,15 @@
       
       
 
-# read_webevals_config succeeds, valid yaml file with length 1 arrays
+# read_predevals_config succeeds, valid yaml file with length 1 arrays
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_length_one_arrays.yaml"))
     Output
+      $schema_version
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      
       $targets
       $targets[[1]]
       $targets[[1]]$target_id
@@ -258,12 +264,15 @@
       
       
 
-# read_webevals_config succeeds, valid yaml file with relative metrics
+# read_predevals_config succeeds, valid yaml file with relative metrics
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_rel_metrics.yaml"))
     Output
+      $schema_version
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      
       $targets
       $targets[[1]]
       $targets[[1]]$target_id
@@ -495,12 +504,15 @@
       
       
 
-# read_webevals_config succeeds, valid yaml file with no min_round_id
+# read_predevals_config succeeds, valid yaml file with no min_round_id
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_no_min_round_id.yaml"))
     Output
+      $schema_version
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      
       $targets
       $targets[[1]]
       $targets[[1]]$target_id
@@ -712,12 +724,15 @@
       
       
 
-# read_webevals_config succeeds, valid yaml file with no disaggregate_by
+# read_predevals_config succeeds, valid yaml file with no disaggregate_by
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_no_disaggregate_by.yaml"))
     Output
+      $schema_version
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      
       $targets
       $targets[[1]]
       $targets[[1]]$target_id
@@ -937,12 +952,15 @@
       
       
 
-# read_webevals_config succeeds, valid yaml file with no task_id_text
+# read_predevals_config succeeds, valid yaml file with no task_id_text
 
     Code
       read_config(hub_path, test_path("testdata", "test_configs",
         "config_valid_no_task_id_text.yaml"))
     Output
+      $schema_version
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      
       $targets
       $targets[[1]]
       $targets[[1]]$target_id

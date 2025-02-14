@@ -1,3 +1,4 @@
+schema_version: https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json
 targets:
 - target_id: wk inc flu hosp
    THIS : LINE : IS : INVALID

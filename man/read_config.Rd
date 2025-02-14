@@ -2,7 +2,7 @@
 % Please edit documentation in R/config.R
 \name{read_config}
 \alias{read_config}
-\title{Load and validate a webevals config file}
+\title{Load and validate a predevals config file}
 \usage{
 read_config(hub_path, config_path)
 }
@@ -16,5 +16,5 @@ options for the evaluation.}
 A list of configuration options for the evaluation.
 }
 \description{
-Load and validate a webevals config file
+Load and validate a predevals config file
 }

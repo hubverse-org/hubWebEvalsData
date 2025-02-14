@@ -1,5 +1,5 @@
 test_that(
-  "read_webevals_config succeeds, valid yaml file",
+  "read_predevals_config succeeds, valid yaml file",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_snapshot(
@@ -13,7 +13,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config succeeds, valid yaml file with length 1 arrays",
+  "read_predevals_config succeeds, valid yaml file with length 1 arrays",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_snapshot(
@@ -27,7 +27,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config succeeds, valid yaml file with relative metrics",
+  "read_predevals_config succeeds, valid yaml file with relative metrics",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_snapshot(
@@ -41,7 +41,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config succeeds, valid yaml file with no min_round_id",
+  "read_predevals_config succeeds, valid yaml file with no min_round_id",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_snapshot(
@@ -55,7 +55,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config succeeds, valid yaml file with no disaggregate_by",
+  "read_predevals_config succeeds, valid yaml file with no disaggregate_by",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_snapshot(
@@ -69,7 +69,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config succeeds, valid yaml file with no task_id_text",
+  "read_predevals_config succeeds, valid yaml file with no task_id_text",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_snapshot(
@@ -83,7 +83,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid yaml file",
+  "read_predevals_config fails, invalid yaml file",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -92,13 +92,73 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_invalid_yaml.yaml")
       ),
-      regexp = "Error reading webevals config file"
+      regexp = "Error reading predevals config file"
     )
   }
 )
 
 test_that(
-  "read_webevals_config fails, multiple modeling round groups",
+  "read_predevals_config fails, no schema_version in yaml file",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_error(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_invalid_no_schema_version.yaml")
+      ),
+      regexp = "The predevals config file is required to contain a `schema_version` property."
+    )
+  }
+)
+
+test_that(
+  "read_predevals_config fails, schema_version is array in yaml file",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_error(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_invalid_array_schema_version.yaml")
+      ),
+      regexp = "The `schema_version` property of the config schema must be a string."
+    )
+  }
+)
+
+test_that(
+  "read_predevals_config fails, arbitrary string schema_version in yaml file",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_error(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_invalid_malformed_schema_version.yaml")
+      ),
+      regexp = "Invalid `schema_version` property of the config schema."
+    )
+  }
+)
+
+test_that(
+  "read_predevals_config fails, well-formatted but unsupported schema_version in yaml file",
+  {
+    hub_path <- test_path("testdata", "ecfh")
+    expect_error(
+      read_config(
+        hub_path,
+        test_path("testdata", "test_configs",
+                  "config_invalid_nonexist_schema_version.yaml")
+      ),
+      regexp = "Invalid predevals schema version."
+    )
+  }
+)
+
+test_that(
+  "read_predevals_config fails, multiple modeling round groups",
   {
     hub_path <- test_path("testdata", "test_hub_invalid_mult_rnd")
     expect_error(
@@ -107,13 +167,13 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_valid.yaml")
       ),
-      regexp = "hubWebevals only supports hubs with a single round group specified in `tasks.json`."
+      regexp = "hubPredEvalsData only supports hubs with a single round group specified in `tasks.json`."
     )
   }
 )
 
 test_that(
-  "read_webevals_config fails, round_id_from_variable false",
+  "read_predevals_config fails, round_id_from_variable false",
   {
     hub_path <- test_path("testdata", "test_hub_invalid_rifv_F")
     expect_error(
@@ -122,13 +182,13 @@ test_that(
         test_path("testdata", "test_configs",
                   "config_valid.yaml")
       ),
-      regexp = "hubWebevals only supports hubs with `round_id_from_variable` set to `true` in `tasks.json`."
+      regexp = "hubPredEvalsData only supports hubs with `round_id_from_variable` set to `true` in `tasks.json`."
     )
   }
 )
 
 test_that(
-  "read_webevals_config fails, invalid target id",
+  "read_predevals_config fails, invalid target id",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -143,7 +203,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid metrics",
+  "read_predevals_config fails, invalid metrics",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -158,7 +218,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid disaggregate by",
+  "read_predevals_config fails, invalid disaggregate by",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -173,7 +233,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid eval window n_last",
+  "read_predevals_config fails, invalid eval window n_last",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -188,7 +248,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid eval window min_round_id",
+  "read_predevals_config fails, invalid eval window min_round_id",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -203,7 +263,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid task_id_text, not a task id variable",
+  "read_predevals_config fails, invalid task_id_text, not a task id variable",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -218,7 +278,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid task_id_text, missing entries",
+  "read_predevals_config fails, invalid task_id_text, missing entries",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -233,7 +293,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid relative metrics, not a subset of metrics",
+  "read_predevals_config fails, invalid relative metrics, not a subset of metrics",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
@@ -248,7 +308,7 @@ test_that(
 )
 
 test_that(
-  "read_webevals_config fails, invalid relative metrics, no baseline",
+  "read_predevals_config fails, invalid relative metrics, no baseline",
   {
     hub_path <- test_path("testdata", "ecfh")
     expect_error(
