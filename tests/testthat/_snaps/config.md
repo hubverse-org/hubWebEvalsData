@@ -4,7 +4,7 @@
       read_config(hub_path, test_path("testdata", "test_configs", "config_valid.yaml"))
     Output
       $schema_version
-      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.2.0/config_schema.json"
       
       $targets
       $targets[[1]]
@@ -31,23 +31,23 @@
       
       
       
-      $eval_windows
-      $eval_windows[[1]]
-      $eval_windows[[1]]$window_name
+      $eval_sets
+      $eval_sets[[1]]
+      $eval_sets[[1]]$eval_set_name
       [1] "Full season"
       
-      $eval_windows[[1]]$min_round_id
+      $eval_sets[[1]]$min_round_id
       [1] "2023-01-21"
       
       
-      $eval_windows[[2]]
-      $eval_windows[[2]]$window_name
+      $eval_sets[[2]]
+      $eval_sets[[2]]$eval_set_name
       [1] "Last 4 weeks"
       
-      $eval_windows[[2]]$min_round_id
+      $eval_sets[[2]]$min_round_id
       [1] "2023-01-21"
       
-      $eval_windows[[2]]$n_last_round_ids
+      $eval_sets[[2]]$n_last_round_ids
       [1] 4
       
       
@@ -238,7 +238,7 @@
         "config_valid_length_one_arrays.yaml"))
     Output
       $schema_version
-      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.2.0/config_schema.json"
       
       $targets
       $targets[[1]]
@@ -253,12 +253,12 @@
       
       
       
-      $eval_windows
-      $eval_windows[[1]]
-      $eval_windows[[1]]$window_name
+      $eval_sets
+      $eval_sets[[1]]
+      $eval_sets[[1]]$eval_set_name
       [1] "Full season"
       
-      $eval_windows[[1]]$min_round_id
+      $eval_sets[[1]]$min_round_id
       [1] "2023-01-21"
       
       
@@ -271,7 +271,7 @@
         "config_valid_rel_metrics.yaml"))
     Output
       $schema_version
-      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.2.0/config_schema.json"
       
       $targets
       $targets[[1]]
@@ -304,23 +304,23 @@
       
       
       
-      $eval_windows
-      $eval_windows[[1]]
-      $eval_windows[[1]]$window_name
+      $eval_sets
+      $eval_sets[[1]]
+      $eval_sets[[1]]$eval_set_name
       [1] "Full season"
       
-      $eval_windows[[1]]$min_round_id
+      $eval_sets[[1]]$min_round_id
       [1] "2023-01-21"
       
       
-      $eval_windows[[2]]
-      $eval_windows[[2]]$window_name
+      $eval_sets[[2]]
+      $eval_sets[[2]]$eval_set_name
       [1] "Last 4 weeks"
       
-      $eval_windows[[2]]$min_round_id
+      $eval_sets[[2]]$min_round_id
       [1] "2023-01-21"
       
-      $eval_windows[[2]]$n_last_round_ids
+      $eval_sets[[2]]$n_last_round_ids
       [1] 4
       
       
@@ -511,7 +511,7 @@
         "config_valid_no_min_round_id.yaml"))
     Output
       $schema_version
-      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.2.0/config_schema.json"
       
       $targets
       $targets[[1]]
@@ -538,9 +538,9 @@
       
       
       
-      $eval_windows
-      $eval_windows[[1]]
-      $eval_windows[[1]]$window_name
+      $eval_sets
+      $eval_sets[[1]]
+      $eval_sets[[1]]$eval_set_name
       [1] "Full season"
       
       
@@ -731,7 +731,7 @@
         "config_valid_no_disaggregate_by.yaml"))
     Output
       $schema_version
-      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.2.0/config_schema.json"
       
       $targets
       $targets[[1]]
@@ -752,23 +752,23 @@
       
       
       
-      $eval_windows
-      $eval_windows[[1]]
-      $eval_windows[[1]]$window_name
+      $eval_sets
+      $eval_sets[[1]]
+      $eval_sets[[1]]$eval_set_name
       [1] "Full season"
       
-      $eval_windows[[1]]$min_round_id
+      $eval_sets[[1]]$min_round_id
       [1] "2023-01-21"
       
       
-      $eval_windows[[2]]
-      $eval_windows[[2]]$window_name
+      $eval_sets[[2]]
+      $eval_sets[[2]]$eval_set_name
       [1] "Last 4 weeks"
       
-      $eval_windows[[2]]$min_round_id
+      $eval_sets[[2]]$min_round_id
       [1] "2023-01-21"
       
-      $eval_windows[[2]]$n_last_round_ids
+      $eval_sets[[2]]$n_last_round_ids
       [1] 4
       
       
@@ -959,7 +959,7 @@
         "config_valid_no_task_id_text.yaml"))
     Output
       $schema_version
-      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.1.0/config_schema.json"
+      [1] "https://raw.githubusercontent.com/hubverse-org/hubPredEvalsData/main/inst/schema/v0.2.0/config_schema.json"
       
       $targets
       $targets[[1]]
@@ -986,23 +986,23 @@
       
       
       
-      $eval_windows
-      $eval_windows[[1]]
-      $eval_windows[[1]]$window_name
+      $eval_sets
+      $eval_sets[[1]]
+      $eval_sets[[1]]$eval_set_name
       [1] "Full season"
       
-      $eval_windows[[1]]$min_round_id
+      $eval_sets[[1]]$min_round_id
       [1] "2023-01-21"
       
       
-      $eval_windows[[2]]
-      $eval_windows[[2]]$window_name
+      $eval_sets[[2]]
+      $eval_sets[[2]]$eval_set_name
       [1] "Last 4 weeks"
       
-      $eval_windows[[2]]$min_round_id
+      $eval_sets[[2]]$min_round_id
       [1] "2023-01-21"
       
-      $eval_windows[[2]]$n_last_round_ids
+      $eval_sets[[2]]$n_last_round_ids
       [1] 4
       
       
