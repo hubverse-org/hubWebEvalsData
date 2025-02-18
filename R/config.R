@@ -147,8 +147,8 @@ validate_config_vs_hub_tasks <- function(hub_path, predevals_config) {
   # checks for targets
   validate_config_targets(predevals_config, task_groups, task_id_names)
 
-  # checks for eval_windows
-  validate_config_eval_windows(predevals_config, hub_tasks_config)
+  # checks for eval_sets
+  validate_config_eval_sets(predevals_config, hub_tasks_config)
 
   # checks for task_id_text
   validate_config_task_id_text(predevals_config, task_groups, task_id_names)
@@ -243,24 +243,24 @@ validate_config_targets <- function(predevals_config, task_groups, task_id_names
 }
 
 
-#' Validate the eval_windows in a predevals config object
+#' Validate the eval_sets in a predevals config object
 #'  - check that min_round_id specified in predevals config is a valid round_id
 #'    for the hub
 #'
 #' @noRd
-validate_config_eval_windows <- function(predevals_config, hub_tasks_config) {
+validate_config_eval_sets <- function(predevals_config, hub_tasks_config) {
   hub_round_ids <- hubUtils::get_round_ids(hub_tasks_config)
-  for (eval_window in predevals_config$eval_windows) {
+  for (eval_set in predevals_config$eval_sets) {
     # check that min_round_id is a valid round_id
-    # only do this check if eval_window$min_round_id is specified
-    if (!"min_round_id" %in% names(eval_window)) {
+    # only do this check if eval_set$min_round_id is specified
+    if (!"min_round_id" %in% names(eval_set)) {
       next
     }
-    if (!eval_window$min_round_id %in% hub_round_ids) {
+    if (!eval_set$min_round_id %in% hub_round_ids) {
       raise_config_error(
         cli::format_inline(
-          "Minimum round id {.val {eval_window$min_round_id}} for evaluation ",
-          "window is not a valid round id for the hub."
+          "Minimum round id {.val {eval_set$min_round_id}} for evaluation ",
+          "set is not a valid round id for the hub."
         )
       )
     }
